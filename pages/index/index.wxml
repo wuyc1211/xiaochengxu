@@ -1,0 +1,57 @@
+<!--index.wxml-->
+<view class="container">
+  <view  bindtap="bindViewTap" class="userinfo">
+    <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}" background-size="cover"></image>
+    <!--<text class="userinfo-nickname">{{userInfo.nickName}}</text>-->
+  </view>
+</view>
+
+
+<view class="weui-cells__title">{{userInfo.nickName}}的宝贝</view>
+<!--<view class="weui-cells weui-cells_after-title">-->
+    <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+            <view class="weui-label">标题</view>
+        </view>
+        <view class="weui-cell__bd">
+            <input class="weui-input" bindblur="bindKeyInputTitle" placeholder="如:我家红富士第二波团购！"/>
+        </view>
+    </view>
+<!--</view>-->
+<view class="weui-cells weui-cells_after-title">
+
+    
+    <scroll-view scroll-y="true" style="height: 100%">
+      <block wx:for="{{dataList}}" wx:key="id">
+        <view class="weui-cell weui-cell_input">
+          <view class="weui-cell__hd">
+              <view class="weui-label">宝贝-{{item.id + 1}}</view>
+          </view>
+          <view class="weui-cell__bd">
+              <input class="weui-input" id="{{item.id}}" value="{{item.name}}" bindblur="bindKeyInputName" placeholder="如：黑葡萄5斤装"/>
+          </view>
+        </view>
+        <view class="weui-cell weui-cell_input weui-cell_vcode">
+            <view class="weui-cell__hd">
+                <view class="weui-label">价格</view>
+            </view>
+            <view class="weui-cell__bd">
+                <input class="weui-input" id="{{item.id}}" value="{{item.price}}" bindblur="bindKeyInputPrice" placeholder="0" />
+            </view>  
+        </view>
+         <view class="weui-cell weui-cell_input weui-cell_vcode">
+            <view class="weui-cell__bd">
+                <input class="weui-input" id="{{item.id}}" bindblur="bindKeyInputComments" placeholder="备注" size="22"/>
+            </view>  
+        </view>       
+      </block>
+      </scroll-view>
+         
+</view>
+<view class="weui-btn-area">
+  <button class="weui-btn mini-btn" type="default" size="mini" bindtap="addNewItem">新增</button>
+  <button class="weui-btn mini-btn" type="default" size="mini" bindtap="removeItem">删除</button>
+</view>
+<view class="weui-btn-area">
+      <button class="weui-btn" type="primary" plain="true" bindtap="confirmDataList">确定</button>
+  </view>

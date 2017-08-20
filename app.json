@@ -1,0 +1,28 @@
+{
+  "pages":[
+    "pages/index/index",
+    "pages/logs/logs",
+    "pages/complete/complete"
+  ],
+  "window":{
+    "backgroundColor" : "#ffffff",
+    "backgroundTextStyle":"light",
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTitleText": "轻收款",
+    "navigationBarTextStyle":"black"
+  },
+  "tabBar": {
+    "color": "#626567",
+    "selectedColor": "#2A8CE5",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    
+    "list": [{
+      "pagePath": "pages/index/index",
+      "text": "新建"
+    }, {
+      "pagePath": "pages/logs/logs",
+      "text": "我的"
+    }]
+  }
+}

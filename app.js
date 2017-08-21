@@ -6,20 +6,9 @@ App({
     var logs = wx.getStorageSync('logs') || []
     logs.unshift(Date.now())
     wx.setStorageSync('logs', logs)
-    var data = wx.getStorageSync("userData");
-    //if (data) {
-      if(0){
-      console.log('get data from storage');
-      console.log(data);
-      this.globalData = data;
-    }
-    else
-    {
-      console.log('get user infor star.....');
-      this.getUserInfo();
-    }
-    
+    // var data = wx.getStorageSync("userData");  
   },
+
   getUserInfo:function(cb){
     var that = this
     
@@ -54,7 +43,7 @@ App({
                     that.globalData.openid = res_req.data.openid;
                     that.globalData.session_key = res_req.data.session_key;
                     // console.log(that.globalData);
-                    // typeof cb == "function" && cb(that.globalData.userInfo);
+                    
                     //获取token
                     console.log('get user infor success');
                     var data = JSON.stringify(that.globalData);
@@ -72,23 +61,12 @@ App({
                       },
                       success: function (res) {
                         console.log('get token from server: ' + res.data.token);
-                        that.globalData.token = res.data.token;
-                        //存储到缓存
-                        wx.setStorage({
-                          key: 'userData',
-                          data: that.globalData,
-                          success: function (res) {
-                            // success
-                          },
-                          fail: function (res) {
-                            console.log('set storage fail');
-                            // console.log(res.det)
-                          },
-                          complete: function (res) {
-                            // complete
-                          }
-                        });
-                      }
+                        that.globalData.userInfo.token = res.data.token;
+                        typeof cb == "function" && cb(that.globalData.userInfo);
+                      },
+                      fail: function(res){
+                        console.log('get token error!!!');
+                      },
                     });
                   },
                   fail: function (res) {

@@ -9,14 +9,12 @@ Page({
 
   onLoad: function () {
     console.log('onLoad');
-    var data = wx.getStorageSync("userData");
-    if (!data)
-    {
-      console.log("load缓存数据失败.");
-      return;
+    var userInfo = wx.getStorageSync("userInfo");
+    if (userInfo) {
+      console.log('get data from storage');
+      console.log(userInfo);
+      this.setData({ userInfo: userInfo, order_id: app.globalData.order_id });
     }
-    this.setData(data);
-    console.log(this.data);
   },
   
   payment_start: function(event) {

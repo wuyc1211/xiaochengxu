@@ -4,7 +4,7 @@ var app = getApp()
 Page({
   data: {
     // motto: 'Hello World',
-    userInfo: {},
+    userInfo: '',
     token: '',
     //openid: '',
     title: '',
@@ -47,13 +47,42 @@ Page({
     })
   },
 
-  onLoad: function () {
+  onLoad: function () 
+  {
       console.log('index.js: onload() start ...');
-      this.setData({
-        userInfo: app.globalData.userInfo,
-        // openid: app.globalData.openid,
-        token: app.globalData.token,
-      });
+      var that = this;
+      var userInfo = wx.getStorageSync("userInfo");
+      if (userInfo) {
+      // if (0) {
+        console.log('get data from storage');
+        console.log(userInfo);
+        this.setData({ userInfo: userInfo});
+      }
+      else {
+        //调用应用实例的方法获取全局数据
+        app.getUserInfo(function (userInfo) {
+          //更新数据
+          that.setData({
+            userInfo: userInfo
+          });
+          //存储到缓存
+          wx.setStorage({
+            key: 'userInfo',
+            data: userInfo,
+            success: function (res) {
+              // success
+            },
+            fail: function (res) {
+              console.log('set storage fail');
+              // console.log(res.det)
+            },
+            complete: function (res) {
+              // complete
+            }
+          });
+        });
+        
+      }
   },
 
   onShareAppMessage: function () {
@@ -71,10 +100,6 @@ Page({
 
   confirmDataList: function(event){
     console.log("confirmDataList");
-    console.log(this.data);
-    console.log(this.data.title);
-    console.log(this.data.dataList.length);
-    console.log(this.data.token)
     if (!this.data.title || (this.data.dataList.length < 1)){
       this.confirmAlert();
       return;
@@ -86,10 +111,9 @@ Page({
       }
     }
 
-
     var order = {
       title: this.data.title,
-      end: '2018-01-01 00:00'
+      end: '2020-01-01 00:00'
     };
     var order_data = JSON.stringify(order);
     var data_list = JSON.stringify(this.data.dataList);
@@ -105,28 +129,36 @@ Page({
       dataType: 'json',
       header: {
         'content-type': 'application/x-www-form-urlencoded',
-        'Authorization': 'Token ' + that.data.token
+        'Authorization': 'Token ' + that.data.userInfo.token,
       },
       success: function(res) {
-        console.log('submit to server succuss');
-        console.log(res.data);
+        console.log('submit to server succuss,get return data:');
+        console.log('order id=', res.data.id);
         console.log(res.statusCode);
-        wx.navigateTo({
-          url: '/pages/complete/complete',
-          success: function (res) {
-            // success
-          },
-          fail: function (res) {
-            // fail
-          },
-          complete: function (res) {
-            // complete
-            console.log('===================');
-          }
-        });
+        if (res.statusCode == '201')
+        {
+          app.globalData.order_id = res.data.id
+          wx.navigateTo({
+            url: '/pages/complete/complete',
+            success: function (res) {
+              // success
+            },
+            fail: function (res) {
+              // fail
+            },
+            complete: function (res) {
+              // complete
+            }
+          });
+        }
+        else
+        {
+          that.confirmAlert('token_error');
+        }
       },
       fail: function(res){
         //show error box
+        that.confirmAlert('token_error');
       },
     });
     
@@ -135,7 +167,6 @@ Page({
   bindKeyInputTitle: function (event) {
     console.log(event.detail.value);
     var value = event.detail.value;
-    // this.setData({title:value});
     this.data.title = value;
   },
 
@@ -143,7 +174,6 @@ Page({
     console.log(event.detail.value);
     var id = event.currentTarget.id;
     this.data.dataList[id].name = event.detail.value;
-    // this.setData({ dataList: this.data.dataList });
   },
 
   bindKeyInputPrice: function(event){
@@ -186,17 +216,34 @@ Page({
     console.log('form发生了submit事件，携带数据为：', e.detail);
   },
 
-  confirmAlert: function () {
-        wx.showModal({
+  confirmAlert: function (type) {
+        if (type == 'token_error')
+        {
+            wx.showModal({
+              title: '错误',
+              content: '网络问题，请稍后重试',
+              showCancel: false,
+              success: function(res){
+                if(res.confirm){
+                  console.log('用户点击确定');
+                }
+              },
+            })
+        }
+        else
+        {
+          wx.showModal({
             content: '请检查标题、名称和价格信息是否正确.',
             title: '提示',
             showCancel: false,
             success: function (res) {
-                if (res.confirm) {
-                    console.log('用户点击确定')
-                }
+              if (res.confirm) {
+                console.log('用户点击确定');
+              }
             }
-        });
+          });
+        }
+        
     },
 
     typeClick: function(e){

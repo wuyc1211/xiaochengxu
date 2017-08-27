@@ -53,7 +53,7 @@ Page({
         'Authorization': 'Token ' + token,
       },
       success: function(res){
-        console.log(res.data);
+        // console.log(res.data);
         for(var i in res.data){
           var item = res.data[i];
           that.data.dataList.push({num: that.data.id + 1, order_id: item.id, title: item.title, created: item.created, end: item.end });
@@ -61,7 +61,16 @@ Page({
         }
         that.setData({ dataList: that.data.dataList });
       },
-      fail: function(res){},
+      fail: function(res){
+        app.showAlert('network_error');
+      },
+    })
+  },
+  clickOrder: function(e){
+    var order_id = e.currentTarget.dataset.orderid;
+    console.log('get order_id:' + order_id);
+    wx.navigateTo({
+      url: '../complete/complete?order_id=' + order_id,
     })
   },
 })

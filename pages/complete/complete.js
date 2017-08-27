@@ -70,7 +70,7 @@ Page({
             'Authorization': 'Token ' + token,
           },
           success: function (res) {
-            console.log(res.data);
+            // console.log(res.data);
             for(var item in res.data){
               var tmp = res.data[item];
               that.data.dataList.push({ id: tmp.sequence, name: tmp.name, price: tmp.price, comments: tmp.price});

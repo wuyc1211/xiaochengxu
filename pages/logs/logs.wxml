@@ -7,14 +7,13 @@
 
 
 <view class="weui-cells weui-cells_after-title">
-
     
     <scroll-view scroll-y="true" style="height: 100%">
       <block wx:for="{{dataList}}" wx:key="id">
         <view class="weui-cell weui-cell_input">
           <view class="weui-cell__hd">
               <!-- <view class="weui-label" id="{{item.id}}">订单标题: {{item.title}}</view> -->
-              <view class="weui-cells__title" id="{{item.id}}"> {{item.num}}.  {{item.title}}</view>
+              <view class="weui-cells__title" id="{{item.id}}" bindtap="clickOrder" data-orderId="{{item.order_id}}"> {{item.num}}.  {{item.title}}</view>
             
               <view class="weui-cells__title">{{item.created}}</view>
               

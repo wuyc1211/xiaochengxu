@@ -8,11 +8,14 @@ App({
     wx.setStorageSync('logs', logs)
     // var data = wx.getStorageSync("userData");  
   },
+  
+  url: 'http://localhost:8000/',
 
   getUserInfo:function(cb){
     var that = this
     
     if(this.globalData.userInfo){
+      // if (0) {
       typeof cb == "function" && cb(this.globalData.userInfo)
     }else{
       //调用登录接口
@@ -49,7 +52,7 @@ App({
                     var data = JSON.stringify(that.globalData);
                     console.log(data);
                     wx.request({
-                      url: 'http://localhost:8000/wx/get-token/',
+                      url: that.url + 'wx/get-token/',
                       data: {
                         "data": data,
                         "from": "abcljailsfuioweijfjlkj34894jdjfsdffsdfzzz"
@@ -93,5 +96,33 @@ App({
   },
   globalData:{
     userInfo:null
-  }
+  },
+
+  showAlert: function (type) {
+    if (type == 'network_error') {
+      wx.showModal({
+        title: '错误',
+        content: '网络问题，请稍后重试',
+        showCancel: false,
+        success: function (res) {
+          if (res.confirm) {
+            console.log('用户点击确定');
+          }
+        },
+      })
+    }
+    else {
+      wx.showModal({
+        content: '请检查标题、名称和价格信息是否正确.',
+        title: '提示',
+        showCancel: false,
+        success: function (res) {
+          if (res.confirm) {
+            console.log('用户点击确定');
+          }
+        }
+      });
+    }
+
+  },
 })

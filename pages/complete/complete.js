@@ -4,19 +4,92 @@ var app = getApp()
 Page({
   data: {
     // motto: 'Hello World',
-  edit_start: false
+    edit_start: false,
+    order_id: '',
+    userInfo: '',
+    title: '',
+    dataList: [
+      // { id: 0, name: "", price: "", comments: "" },
+    ]
   },
 
-  onLoad: function () {
-    console.log('onLoad');
+  url: app.url + 'wx/orders/',
+
+  onLoad: function (options) {
+    console.log('comlete ..... onLoad');
+    console.log(options.order_id);
+    this.data.order_id = options.order_id;
+
+    var that = this;
     var userInfo = wx.getStorageSync("userInfo");
     if (userInfo) {
+    //  if (0) {
       console.log('get data from storage');
-      console.log(userInfo);
-      this.setData({ userInfo: userInfo, order_id: app.globalData.order_id });
+      // console.log(userInfo);
+      this.setData({ userInfo: userInfo });
+      this.getOrderAndDataList(userInfo.token, that.url + options.order_id + '/');
+    }
+    else
+    {
+      //调用应用实例的方法获取全局数据
+      app.getUserInfo(function (userInfo) {
+        //更新数据
+        that.setData({
+          userInfo: userInfo
+        });
+        this.getOrderAndDataList(that.data.userInfo.token, that.url + options.order_id + '/');
+      });
     }
   },
   
+
+  getOrderAndDataList: function(token, url)
+  {
+    console.log('getOrderAndDataList ... enter');
+    console.log(token);
+    console.log(url);
+    var that = this;
+    wx.request({
+      url: url,
+      dataType: 'json',
+      method: 'GET',
+      header: {
+        'Authorization': 'Token ' + token,
+      },
+      success: function (res) {
+        console.log(res.data);
+        that.setData({
+          'title': res.data.title,
+          'created': res.data.created,
+        });
+        wx.request({
+          url: url + 'data-list/',
+          dataType: 'json',
+          method: 'GET',
+          header: {
+            'Authorization': 'Token ' + token,
+          },
+          success: function (res) {
+            console.log(res.data);
+            for(var item in res.data){
+              var tmp = res.data[item];
+              that.data.dataList.push({ id: tmp.sequence, name: tmp.name, price: tmp.price, comments: tmp.price});
+              that.setData({ dataList: that.data.dataList });
+              //this.data.dataList.push({id:id, name:"", price:""});
+            }
+          },
+          fail: function (res) {
+            app.showAlert('network_error');
+          },
+        })
+      },
+      fail: function (res) {
+        app.showAlert('network_error');
+      },
+    });
+  },
+
+
   payment_start: function(event) {
     //
     if (this.data.edit_start){
@@ -45,11 +118,9 @@ Page({
     });
   },
 
+
+
   onShareAppMessage: function () {
     var data = JSON.stringify(this.data);
-    //console.log(data);
-
-    
-    
   },
 })

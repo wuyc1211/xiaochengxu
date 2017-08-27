@@ -101,12 +101,12 @@ Page({
   confirmDataList: function(event){
     console.log("confirmDataList");
     if (!this.data.title || (this.data.dataList.length < 1)){
-      this.confirmAlert();
+      app.showAlert();
       return;
     }
     for (var i = 0; i < this.data.dataList.length; i++){
       if(!this.data.dataList[i].name || !this.data.dataList[i].price){
-        this.confirmAlert();
+        app.showAlert();
         return;
       }
     }
@@ -137,9 +137,9 @@ Page({
         console.log(res.statusCode);
         if (res.statusCode == '201')
         {
-          app.globalData.order_id = res.data.id
+          // app.globalData.order_id = res.data.id
           wx.navigateTo({
-            url: '/pages/complete/complete',
+            url: '/pages/complete/complete?order_id=' + res.data.id,
             success: function (res) {
               // success
             },
@@ -153,12 +153,12 @@ Page({
         }
         else
         {
-          that.confirmAlert('token_error');
+          app.showAlert('network_error');
         }
       },
       fail: function(res){
         //show error box
-        that.confirmAlert('token_error');
+        app.showAlert('network_error');
       },
     });
     
@@ -216,37 +216,9 @@ Page({
     console.log('form发生了submit事件，携带数据为：', e.detail);
   },
 
-  confirmAlert: function (type) {
-        if (type == 'token_error')
-        {
-            wx.showModal({
-              title: '错误',
-              content: '网络问题，请稍后重试',
-              showCancel: false,
-              success: function(res){
-                if(res.confirm){
-                  console.log('用户点击确定');
-                }
-              },
-            })
-        }
-        else
-        {
-          wx.showModal({
-            content: '请检查标题、名称和价格信息是否正确.',
-            title: '提示',
-            showCancel: false,
-            success: function (res) {
-              if (res.confirm) {
-                console.log('用户点击确定');
-              }
-            }
-          });
-        }
-        
-    },
+  
 
-    typeClick: function(e){
-      console.log(e);
-    }
+  typeClick: function(e){
+    console.log(e);
+  }
 })

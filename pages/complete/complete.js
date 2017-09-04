@@ -23,7 +23,6 @@ Page({
     var that = this;
     var userInfo = wx.getStorageSync("userInfo");
     if (userInfo) {
-    //  if (0) {
       console.log('get data from storage');
       // console.log(userInfo);
       this.setData({ userInfo: userInfo });
@@ -108,11 +107,40 @@ Page({
   payment_edit: function(event){
     this.setData({ edit_start: true });
     console.log('payment_edit');
+
+    var that = this;
     wx.showActionSheet({
-      itemList: ['禁止', '删除'],
+      itemList: ['编辑', '删除', '暂停'],
       success: function (res) {
         if (!res.cancel) {
-          console.log(res.tapIndex)
+          console.log(res.tapIndex);
+        }
+
+        if (res.tapIndex == 0)//编辑
+        {
+          wx.setStorageSync('edit_data',that.data);
+          wx.navigateTo({
+            url: '/pages/edit/edit?edit_data=' + 'edit_data',
+            success: function (res) {
+              // success
+            },
+            fail: function (res) {
+              console.log('fail....');
+              console.log(res);
+              // fail
+            },
+            complete: function (res) {
+              // complete
+            }
+          })
+        }
+        else
+        {
+          wx.removeStorageSync('edit_data');
+          if (res.tapIndex == 1)//删除
+          {
+
+          }
         }
       }
     });

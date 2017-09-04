@@ -12,7 +12,7 @@ App({
   url: 'http://localhost:8000/',
 
   getUserInfo:function(cb){
-    var that = this
+    var that = this;
     
     if(this.globalData.userInfo){
       // if (0) {

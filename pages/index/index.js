@@ -47,9 +47,20 @@ Page({
     // })
   },
 
-  onLoad: function () 
+  onLoad: function (options) 
   {
+      wx.removeStorageSync("userInfo");
       console.log('index.js: onload() start ...');
+      console.log(options);
+      if ('edit_data' in options)
+      {
+        console.log('edit_data=' + options.edit_data);
+        var edit_data = wx.getStorageSync(options.edit_data);
+        return;
+      }
+      
+
+
       var that = this;
       var userInfo = wx.getStorageSync("userInfo");
       if (userInfo) {

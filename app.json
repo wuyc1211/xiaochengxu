@@ -2,7 +2,8 @@
   "pages":[
     "pages/index/index",
     "pages/logs/logs",
-    "pages/complete/complete"
+    "pages/complete/complete",
+    "pages/edit/edit"
   ],
   "window":{
     "backgroundColor" : "#ffffff",
